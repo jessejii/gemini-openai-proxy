@@ -20,11 +20,22 @@ Plug-and-play with clients that already speak OpenAI like SillyTavern, llama.cpp
 
 ## Quick start
 
+### With npm
+
 ```bash
 git clone https://github.com/Brioch/gemini-openai-proxy
 cd gemini-openai-proxy
 npm i
 npm start # launch (runs on port 11434 by default)
+```
+
+### With Docker
+
+Alternatively, you can use the provided Dockerfile to build a Docker image.
+
+```sh
+docker build --tag "gemini-openai-proxy" .
+docker run -p 11434:80 -e GEMINI_API_KEY gemini-openai-proxy
 ```
 
 ### Optional env vars
@@ -48,6 +59,8 @@ curl -X POST http://localhost:11434/v1/chat/completions \
 
 Chat completion
 API Base URL http://127.0.0.1:11434/v1
+
+
 
 ## License
 
