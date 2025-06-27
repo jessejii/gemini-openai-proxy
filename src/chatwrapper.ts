@@ -5,15 +5,20 @@ import {
   createContentGenerator,
 } from '@google/gemini-cli-core/dist/src/core/contentGenerator.js';
 
+const authType = process.env.AUTH_TYPE ?? 'gemini-api-key';
+const authTypeEnum = authType as AuthType;
+
+console.log(`Auth type: ${authType}`);
+
 /* ------------------------------------------------------------------ */
 /* 1.  Build the ContentGenerator exactly like the CLI does           */
 /* ------------------------------------------------------------------ */
-let modelName: string;                      // we'll fill this once
+let modelName: string;
 const generatorPromise = (async () => {
   // Pass undefined for model so the helper falls back to DEFAULT_GEMINI_MODEL
   const cfg = await createContentGeneratorConfig(
-    undefined,                     // let helper pick default (Gemini-2.5-Pro)
-    AuthType.USE_GEMINI            // same mode the CLI defaults to
+    undefined, // let default model be used
+    authTypeEnum
   );
   modelName = cfg.model;           // remember the actual model string
   return await createContentGenerator(cfg);
