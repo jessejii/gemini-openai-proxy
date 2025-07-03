@@ -81,10 +81,6 @@ export function listModels() {
   }];
 }
 
-export async function embed(_input: unknown) {
-  throw new Error('Embeddings endpoint not implemented yet.');
-}
-
 export function getModel() {
   return modelName;
 }

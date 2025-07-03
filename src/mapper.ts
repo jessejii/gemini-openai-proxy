@@ -42,10 +42,10 @@ export async function mapRequest(body: any) {
     topP: body.top_p,
     ...(body.generationConfig ?? {}), // copy anything ST already merged
   };
-if (body.include_reasoning === true) {
-  generationConfig.enable_thoughts = true;        // ← current flag
-  generationConfig.thinking_budget ??= 2048;      // optional limit
-}
+  if (body.include_reasoning === true) {
+    generationConfig.enable_thoughts = true;        // ← current flag
+    generationConfig.thinking_budget ??= 2048;      // optional limit
+  }
 
   /* ---- auto-enable reasoning & 1 M context ----------------------- */
   if (body.include_reasoning === true && generationConfig.thinking !== true) {
