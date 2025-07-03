@@ -10,6 +10,12 @@ const authTypeEnum = authType as AuthType;
 
 console.log(`Auth type: ${authType}`);
 
+const model = process.env.MODEL ?? undefined;
+
+if (model) {
+  console.log(`Model override: ${model}`);
+}
+
 /* ------------------------------------------------------------------ */
 /* 1.  Build the ContentGenerator exactly like the CLI does           */
 /* ------------------------------------------------------------------ */
@@ -17,10 +23,12 @@ let modelName: string;
 const generatorPromise = (async () => {
   // Pass undefined for model so the helper falls back to DEFAULT_GEMINI_MODEL
   const cfg = await createContentGeneratorConfig(
-    undefined, // let default model be used
+    model, // let default model be used
     authTypeEnum
   );
   modelName = cfg.model;           // remember the actual model string
+  console.log(`Gemini CLI returned model: ${modelName}`);
+
   return await createContentGenerator(cfg);
 })();
 
@@ -66,9 +74,17 @@ export async function* sendChatStream({
 /* 3.  Minimal stubs so server.ts compiles (extend later)              */
 /* ------------------------------------------------------------------ */
 export function listModels() {
-  return [{ id: modelName }];
+  return [{ 
+    id: modelName,
+    object: 'model',
+    owned_by: 'google'
+  }];
 }
 
 export async function embed(_input: unknown) {
   throw new Error('Embeddings endpoint not implemented yet.');
+}
+
+export function getModel() {
+  return modelName;
 }

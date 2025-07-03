@@ -1,5 +1,5 @@
 import http from 'http';
-import { sendChat, sendChatStream } from './chatwrapper';
+import { sendChat, sendChatStream, listModels } from './chatwrapper';
 import { mapRequest, mapResponse, mapStreamChunk } from './mapper';
 
 /* ── basic config ─────────────────────────────────────────────────── */
@@ -49,13 +49,7 @@ http
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(
         JSON.stringify({
-          data: [
-            {
-              id: 'gemini-2.5-pro-latest',
-              object: 'model',
-              owned_by: 'google',
-            },
-          ],
+          data: listModels(),
         }),
       );
       return;
@@ -91,10 +85,12 @@ http
           console.log('➜ done sending streamed response');
         } else {
           const gResp = await sendChat({ ...geminiReq, tools });
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(mapResponse(gResp)));
+          const mapped = mapResponse(gResp);
+          const code = 200;
+          res.writeHead(code, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(mapped));
 
-          console.log('➜ sent HTTP 200 response');
+          console.log('✅ Replied HTTP ' + code + ' response', mapped);
         }
       } catch (err: any) {
         console.error('HTTP 500 Proxy error ➜', err);

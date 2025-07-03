@@ -40,11 +40,18 @@ docker run -p 11434:80 -e GEMINI_API_KEY gemini-openai-proxy
 
 ### Optional env vars
 
+```sh
 PORT=11434
 
-AUTH_TYPE='gemini-api-key' # can be any of 'oauth-personal', 'gemini-api-key', 'vertex-ai'. Use oauth-personal for free access to Gemini 2.5 Pro by logging in to a Google account.
+# can be any of 'oauth-personal', 'gemini-api-key', 'vertex-ai'. Use oauth-personal for free access to Gemini 2.5 Pro by logging in to a Google account.
+AUTH_TYPE='gemini-api-key' 
 
+# API key is only used with AUTH_TYPE='gemini-api-key'
 GEMINI_API_KEY=
+
+# Use 'gemini-2.5-flash' or 'gemini-2.5-pro'. Leave empty to let CLI choose its default model.
+MODEL=
+```
 
 ### Minimal curl test
 

@@ -4,6 +4,7 @@
 import { fetchAndEncode } from './remoteimage';
 import { z } from 'zod';
 import { ToolRegistry } from '@google/gemini-cli-core/dist/src/tools/tool-registry.js';
+import { getModel } from './chatwrapper';
 
 /* ------------------------------------------------------------------ */
 type Part = { text?: string; inlineData?: { mimeType: string; data: string } };
@@ -59,6 +60,8 @@ if (body.include_reasoning === true) {
     stream: body.stream,
   };
 
+  console.log('Gemini request:', geminiReq);
+
   /* ---- Tool / function mapping ----------------------------------- */
   const tools = new ToolRegistry({} as any);
 
@@ -85,11 +88,25 @@ if (body.include_reasoning === true) {
 /* ================================================================== */
 export function mapResponse(gResp: any) {
   const usage = gResp.usageMetadata ?? {};
+  const hasError = typeof gResp.candidates === 'undefined';
+
+  console.log('Received response:', gResp);
+
+  if (hasError) {
+    console.error('No candidates returned.');
+
+    return {
+      error: {
+        message: gResp?.promptFeedback?.blockReason ?? 'No candidates returned.',
+      }
+    }
+  }
+  
   return {
     id: `chatcmpl-${Date.now()}`,
     object: 'chat.completion',
     created: Math.floor(Date.now() / 1000),
-    model: 'gemini-2.5-pro-latest',
+    model: getModel(),
     choices: [
       {
         index: 0,
